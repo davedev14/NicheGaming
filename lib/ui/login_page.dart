@@ -108,7 +108,7 @@ class LoginPage extends StatelessWidget {
                Transform.translate(
                offset: const Offset(0, -20),
                   child: Text(
-                    'Do hype ao classico, tudo em um',
+                    'Do hype ao clássico, tudo em um',
                     style: GoogleFonts.passionOne(
                       color: const Color.fromARGB(179, 103, 103, 103),
                       fontSize: 20,
@@ -139,7 +139,7 @@ class LoginPage extends StatelessWidget {
                   controller: emailController,
 
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
 
                   decoration: InputDecoration(
@@ -219,14 +219,32 @@ class LoginPage extends StatelessWidget {
                     child: Text(
                       'Entrar',
                       style: GoogleFonts.passionOne(
-                        fontSize: 24,
+                        fontSize: 28,
                         color: Color.fromARGB(255, 255, 255, 255)
                       ),
                     ),
                   ),
                 ),
 
-                SizedBox(height: 10),
+                SizedBox(height: 15),
+
+                 Row(
+                    children: const [
+                      Expanded(child: Divider()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          "OU",
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),  
+                        ),
+                      ),
+                      Expanded(child: Divider()),
+                    ],
+                  ),
+
+                  SizedBox(height: 15),
 
                 // BOTÃO CADASTRO
                 SizedBox(
@@ -247,7 +265,7 @@ class LoginPage extends StatelessWidget {
 
                       style: ElevatedButton.styleFrom(
 
-                        backgroundColor: const Color.fromARGB(255, 87, 205, 93),
+                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
 
                         shape: RoundedRectangleBorder(
                           borderRadius:
@@ -256,10 +274,10 @@ class LoginPage extends StatelessWidget {
                       ),
 
                     child: Text(
-                      'Criar conta',
+                      'Criar uma conta',
                       style: GoogleFonts.passionOne(
-                        fontSize: 24,
-                        color: const Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 28,
+                        color: const Color.fromARGB(255, 87, 205, 93),
                       ),
                     ),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../services/auth_service.dart';
 
@@ -88,7 +89,7 @@ class RegisterPage extends StatelessWidget {
               controller: emailController,
 
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               ),
 
               decoration: InputDecoration(
@@ -97,7 +98,7 @@ class RegisterPage extends StatelessWidget {
 
                 filled: true,
 
-                fillColor: Color(0xFF1E293B),
+                fillColor: Color(0xFFECECEC),
 
                 border: OutlineInputBorder(
                   borderRadius:
@@ -125,7 +126,7 @@ class RegisterPage extends StatelessWidget {
 
                 filled: true,
 
-                fillColor: Color(0xFF1E293B),
+                fillColor: Color(0xFFECECEC),
 
                 border: OutlineInputBorder(
                   borderRadius:
@@ -149,14 +150,20 @@ class RegisterPage extends StatelessWidget {
                     register(context),
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                  Colors.orange,
-                ),
+                  backgroundColor: const Color.fromARGB(255, 87, 205, 93),
 
+                  shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(12),
+                        ),
+                ),
+                
+                              
                 child: Text(
-                  'Cadastrar',
-                  style: TextStyle(
-                    fontSize: 18,
+                  'Cadastrar-se',
+                  style: GoogleFonts.passionOne(
+                    fontSize: 28,
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
               ),
