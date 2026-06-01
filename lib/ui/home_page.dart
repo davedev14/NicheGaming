@@ -1,158 +1,38 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:niche_gaming/ui/cart_page.dart';
+// import 'package:niche_gaming/ui/login_page.dart';
 
 import '../models/task.dart';
-
 import '../services/firestore_service.dart';
 
-import '../services/auth_service.dart';
-
-import 'login_page.dart';
 
 class HomePage extends StatelessWidget {
+  HomePage({super.key});
 
-  // Controller input
-  final controller =
-      TextEditingController();
-
-  // Serviço Firestore
-  final service =
-      FirestoreService();
-
-  // Serviço Auth
-  final auth =
-      AuthService();
-
-  // ADICIONAR TAREFA
-  void addTask(String userId) {
-
-    // Valida vazio
-    if (controller.text.isEmpty) {
-      return;
-    }
-
-    // Cria tarefa
-    service.addTask(
-
-      Task(
-        title: controller.text,
-        userId: userId,
-      ),
-    );
-
-    // Limpa campo
-    controller.clear();
-  }
-
-  // EDITAR TAREFA
-  void editTask(
-      BuildContext context,
-      Task task,
-      ) {
-
-    final editController =
-    TextEditingController(
-      text: task.title,
-    );
-
-    showDialog(
-
-      context: context,
-
-      builder: (_) {
-
-        return AlertDialog(
-
-          title:
-          Text('Editar tarefa'),
-
-          content: TextField(
-            controller: editController,
-          ),
-
-          actions: [
-
-            TextButton(
-
-              onPressed: () {
-
-                Navigator.pop(context);
-              },
-
-              child: Text('Cancelar'),
-            ),
-
-            ElevatedButton(
-
-              onPressed: () {
-
-                // Atualiza título
-                task.title =
-                    editController.text;
-
-                // Atualiza banco
-                service.updateTask(task);
-
-                Navigator.pop(context);
-              },
-
-              child: Text('Salvar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  final FirestoreService service = FirestoreService();
 
   @override
   Widget build(BuildContext context) {
-
-    // Usuário logado
-    final user =
-        FirebaseAuth.instance.currentUser!;
-
+    final user = FirebaseAuth.instance.currentUser!;
     final userId = user.uid;
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(245, 245, 245, 245),
 
-      backgroundColor:
-      Color.fromARGB(245, 245, 245, 245),
-
-      // APPBAR
       appBar: AppBar(
-
-        backgroundColor:
-        Colors.transparent,
-
-        elevation: 0,
-
-        title:
-        Text('Minhas tarefas'),
-
+        title: const Text('NicheGaming 🎮'),
+        centerTitle: true,
         actions: [
-
-          // BOTÃO SAIR
           IconButton(
-
-            icon: Icon(Icons.logout),
-
-            onPressed: () async {
-
-              // Logout
-              await auth.logout();
-
-              // Vai login
-              Navigator.pushAndRemoveUntil(
-
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.push(
                 context,
-
                 MaterialPageRoute(
-                  builder: (_) =>
-                      LoginPage(),
+                  builder: (_) => CartPage(),
                 ),
-
-                    (route) => false,
               );
             },
           ),
@@ -160,233 +40,140 @@ class HomePage extends StatelessWidget {
       ),
 
       body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: StreamBuilder<List<Task>>(
+          stream: service.getTasks(userId),
+          builder: (_, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-        padding: EdgeInsets.all(16),
+            final products = snapshot.data!;
 
-        child: Column(
+            if (products.isEmpty) {
+              return const Center(
+                child: Text('Nenhum produto encontrado'),
+              );
+            }
 
-          children: [
-
-            // INPUT
-            Container(
-
-              padding:
-              EdgeInsets.symmetric(
-                horizontal: 12,
+            return GridView.builder(
+              itemCount: products.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 0.70,
               ),
+              itemBuilder: (_, index) {
+                final product = products[index];
 
-              decoration: BoxDecoration(
-
-                color:
-                Color(0xFF1E293B),
-
-                borderRadius:
-                BorderRadius.circular(12),
-              ),
-
-              child: Row(
-
-                children: [
-
-                  Expanded(
-
-                    child: TextField(
-
-                      controller: controller,
-
-                      style: TextStyle(
-                        color: Colors.white,
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-
-                      decoration:
-                      InputDecoration(
-
-                        hintText:
-                        'Nova tarefa',
-
-                        border:
-                        InputBorder.none,
-                      ),
-                    ),
+                    ],
                   ),
-
-                  // BOTÃO ADD
-                  IconButton(
-
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.orange,
-                    ),
-
-                    onPressed: () =>
-                        addTask(userId),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 20),
-
-            // LISTA
-            Expanded(
-
-              child:
-              StreamBuilder<List<Task>>(
-
-                stream:
-                service.getTasks(userId),
-
-                builder: (_, snapshot) {
-
-                  // Loading
-                  if (!snapshot.hasData) {
-
-                    return Center(
-                      child:
-                      CircularProgressIndicator(),
-                    );
-                  }
-
-                  final tasks =
-                  snapshot.data!;
-
-                  // Sem tarefas
-                  if (tasks.isEmpty) {
-
-                    return Center(
-
-                      child: Text(
-
-                        'Nenhuma tarefa',
-
-                        style: TextStyle(
-                          color: Colors.white54,
-                        ),
-                      ),
-                    );
-                  }
-
-                  // LISTVIEW
-                  return ListView.builder(
-
-                    itemCount: tasks.length,
-
-                    itemBuilder: (_, index) {
-
-                      final task =
-                      tasks[index];
-
-                      return Container(
-
-                        margin:
-                        EdgeInsets.only(
-                          bottom: 12,
-                        ),
-
-                        padding:
-                        EdgeInsets.all(16),
-
-                        decoration:
-                        BoxDecoration(
-
-                          color:
-                          Color(0xFF1E293B),
-
-                          borderRadius:
-                          BorderRadius.circular(16),
-                        ),
-
-                        child: Row(
-
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // IMAGEM
+                      Expanded(
+                        child: Stack(
                           children: [
-
-                            // CHECKBOX
-                            Checkbox(
-
-                              value: task.done,
-
-                              activeColor:
-                              Colors.orange,
-
-                              onChanged: (_) {
-
-                                task.done =
-                                !task.done;
-
-                                service
-                                    .updateTask(task);
-                              },
+                            Center(
+                              child: Image.network(
+                                product.image,
+                                fit: BoxFit.contain,
+                              ),
                             ),
 
-                            // TEXTO
-                            Expanded(
+                            // BOTÃO CARRINHO
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.add_shopping_cart,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    service.addTask(
+                                      Task(
+                                        title: product.title,
+                                        category: product.category,
+                                        image: product.image,
+                                        price: product.price,
+                                        rating: product.rating,
+                                        userId: userId,
+                                      ),
+                                    );
 
-                              child: Text(
-
-                                task.title,
-
-                                style: TextStyle(
-
-                                  color:
-                                  Colors.white,
-
-                                  fontSize: 16,
-
-                                  decoration:
-                                  task.done
-
-                                      ? TextDecoration
-                                      .lineThrough
-
-                                      : null,
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Produto adicionado ao carrinho',
+                                        ),
+                                        duration: Duration(seconds: 1),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
 
-                            // EDITAR
-                            IconButton(
-
-                              icon: Icon(
-                                Icons.edit,
-                                color:
-                                Colors.amber,
+                      // TEXTO
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.category,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.green,
                               ),
-
-                              onPressed: () {
-
-                                editTask(
-                                  context,
-                                  task,
-                                );
-                              },
                             ),
-
-                            // EXCLUIR
-                            IconButton(
-
-                              icon: Icon(
-                                Icons.delete,
-                                color:
-                                Colors.red,
+                            const SizedBox(height: 4),
+                            Text(
+                              product.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
-
-                              onPressed: () {
-
-                                service
-                                    .deleteTask(
-                                  task.id!,
-                                );
-                              },
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'R\$ ${product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );

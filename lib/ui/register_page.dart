@@ -82,6 +82,30 @@ class RegisterPage extends StatelessWidget {
           MainAxisAlignment.center,
 
           children: [
+            Transform.translate(
+                offset: const Offset(0, -60),
+                    child: SizedBox(
+                      width: 320,
+                      //  height: 320,
+                      child: Image.asset('image/logo.png'),
+                    ),
+                  ), 
+
+                SizedBox(height: 5), 
+                
+                Transform.translate(
+                offset: const Offset(0, -20),
+                  child: Text(
+                    'NicheGaming',
+                    style: GoogleFonts.passionOne(
+                      color: const Color.fromARGB(255, 87, 205, 93),
+                      fontSize: 40,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 10),
 
             // EMAIL
             TextField(
