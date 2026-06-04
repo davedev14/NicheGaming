@@ -7,7 +7,7 @@ import 'package:niche_gaming/ui/home_page.dart';
 import '../services/auth_service.dart';
 
 // Importa tela home
-import 'cart_page.dart';
+// import 'cart_page.dart';
 
 // Importa tela cadastro
 import 'register_page.dart';

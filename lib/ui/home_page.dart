@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:niche_gaming/ui/cart_page.dart';
 // import 'package:niche_gaming/ui/login_page.dart';
@@ -20,24 +22,45 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(245, 245, 245, 245),
-
+      
+      
       appBar: AppBar(
-        title: const Text('NicheGaming 🎮'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => CartPage(),
-                ),
-              );
-            },
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'image/logo.png',
+                height: 28, // ajuste como quiser
+              ),
+        
+            const SizedBox(width: 8),
+                  
+            Text(
+              'NicheGaming',
+              style: GoogleFonts.passionOne(
+                color: const Color.fromARGB(255, 87, 205, 93),
+                fontSize: 34,
+                fontWeight: FontWeight.w700,
+                ),                  
+              ),
+            ],
           ),
-        ],
-      ),
+        
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CartPage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -73,7 +96,7 @@ class HomePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
