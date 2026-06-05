@@ -4,21 +4,23 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:niche_gaming/ui/cart_page.dart';
-// import 'package:niche_gaming/ui/login_page.dart';
-
-import '../models/task.dart';
 import '../services/firestore_service.dart';
+
+
+import '../data/home_products.dart';
+import '../models/task.dart';
+
 
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  final FirestoreService service = FirestoreService();
+  // final FirestoreService service = FirestoreService();
 
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
-    final userId = user.uid;
+    // final userId = user.uid;
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(245, 245, 245, 245),
@@ -31,7 +33,7 @@ class HomePage extends StatelessWidget {
             children: [
               Image.asset(
                 'image/logo.png',
-                height: 28, // ajuste como quiser
+                height: 24, // ajuste como quiser
               ),
         
             const SizedBox(width: 8),
@@ -62,143 +64,144 @@ class HomePage extends StatelessWidget {
           ],
         ),
 
-      body: Padding(
+
+     body: Padding(
         padding: const EdgeInsets.all(16),
-        child: StreamBuilder<List<Task>>(
-          stream: service.getTasks(userId),
-          builder: (_, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        child: GridView.builder(
+          itemCount: homeProducts.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.70,
+          ),
+          itemBuilder: (context, index) {
+            final Task product = homeProducts[index];
 
-            final products = snapshot.data!;
-
-            if (products.isEmpty) {
-              return const Center(
-                child: Text('Nenhum produto encontrado'),
-              );
-            }
-
-            return GridView.builder(
-              itemCount: products.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.70,
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
-              itemBuilder: (_, index) {
-                final product = products[index];
-
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // IMAGEM
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: Image.network(
-                                product.image,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-
-                            // BOTÃO CARRINHO
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.add_shopping_cart,
-                                    size: 20,
-                                  ),
-                                  onPressed: () {
-                                    service.addTask(
-                                      Task(
-                                        title: product.title,
-                                        category: product.category,
-                                        image: product.image,
-                                        price: product.price,
-                                        rating: product.rating,
-                                        userId: userId,
-                                      ),
-                                    );
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Produto adicionado ao carrinho',
-                                        ),
-                                        duration: Duration(seconds: 1),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ===== IMAGEM + BOTÃO =====
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Image.asset(
+                            product.image,
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                      ),
 
-                      // TEXTO
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              product.category,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.green,
-                              ),
+                        // BOTÃO ADD CARRINHO
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              product.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                            
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.shopping_cart,
+                                size: 20,
                               ),
+                              onPressed: () {
+                                _addToCart(context, product);
+                              },
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'R\$ ${product.price.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                );
-              },
+
+                  // ===== TEXTO =====
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        Text(
+                          product.category,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.green,
+                          ),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        Text(
+                          product.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(height: 6),
+
+                        Text(
+                          'R\$ ${product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),
       ),
     );
   }
+
+  // ================= ADD AO CARRINHO =================
+  void _addToCart(BuildContext context, Task product) {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    final FirestoreService service = FirestoreService();
+
+    service.addTask(
+      Task(
+        title: product.title,
+        category: product.category,
+        image: product.image,
+        price: product.price,
+        rating: product.rating,
+        userId: userId,
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Produto adicionado ao carrinho'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
 }
+
+
+

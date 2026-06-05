@@ -57,6 +57,14 @@ dev_dependencies:
 flutter:
   assets:
     - image/logo.png
+    - image/xbox.png
+    - image/steam.png
+    - image/redragon.png
+    - image/ps5.png
+    - image/nintendo.png
+    - image/controle.png
+    - image/cadeira.webp
+    - image/azul.webp
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

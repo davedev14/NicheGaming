@@ -1,15 +1,11 @@
 class Task {
-  // ID do documento 
+
   String? id;
-  // Nome da Tarefa
   String title;
-  // Status 
-  // bool done;
   final String category;
   final double price;
   final String image;
   final double rating;
-  // Dono da terefa
   String userId;
 
   Task({
@@ -20,7 +16,7 @@ class Task {
     required this.price,
     required this.rating,
     required this.userId,
-    // this.done = false
+
     });
     // converter para json
   Map<String, dynamic> toMap(){
