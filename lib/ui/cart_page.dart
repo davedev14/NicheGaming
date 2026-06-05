@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:niche_gaming/ui/home_page.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
+
 import '../models/task.dart';
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
@@ -30,7 +33,22 @@ class CartPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Carrinho'),
+        title: Row(
+          children: [
+            Text(
+          'Carrinho',
+          style: GoogleFonts.passionOne(
+            color: const Color.fromARGB(255, 87, 205, 93),
+              fontSize: 34,
+              fontWeight: FontWeight.w700,
+              )
+            ),
+           ],
+          ),
+          
+
+
+
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -96,7 +114,7 @@ class CartPage extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B),
+                          color: const Color(0xFFECECEC),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Row(
@@ -119,11 +137,13 @@ class CartPage extends StatelessWidget {
                                   Text(
                                     item.title,
                                     style: const TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+
                                   const SizedBox(height: 4),
+
                                   Text(
                                     'R\$ ${item.price.toStringAsFixed(2)}',
                                     style: const TextStyle(
