@@ -42,7 +42,7 @@ final List<Task> homeProducts = [
     userId: '',
   ),
   Task(
-    title: 'Headser Gamer Redragon',
+    title: 'Headset Gamer Redragon',
     category: 'Fone',
     image: 'image/redragon.png',
     price: 299.00,

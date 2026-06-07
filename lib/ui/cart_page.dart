@@ -46,9 +46,6 @@ class CartPage extends StatelessWidget {
            ],
           ),
           
-
-
-
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
