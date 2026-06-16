@@ -34,12 +34,13 @@ class _ProductsPageState extends State<ProductsPage> {
       title: titleController.text,
       description: descriptionController.text,
       category: categoryController.text,
-      price: double.parse(priceController.text),
+      price: double.tryParse(priceController.text.replaceAll(',','.'),
+      ) ?? 0.0,
       imageUrl: imageController.text,
       sellerId: userId,
     );
 
-    await FirestoreService().addTask(product);
+    await FirestoreService().addProduct(product);
 
     setState(() => isLoading = false);
 

@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:niche_gaming/ui/cart_page.dart';
 import '../services/firestore_service.dart';
 
-import 'register_page.dart';
+import 'register_products.dart';
 import '../data/home_products.dart';
 import '../models/task.dart';
 
@@ -179,9 +179,11 @@ class _HomePageState extends State<HomePage> {
                     child: Stack(
                       children: [
                         Center(
-                          child: Image.asset(
+                          child: Image.network(
                             product.image,
                             fit: BoxFit.contain,
+                            errorBuilder: (_, _, _) =>
+                                const Icon(Icons.broken_image),
                           ),
                         ),
 

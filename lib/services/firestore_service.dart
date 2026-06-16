@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:niche_gaming/models/products.dart';
 
 import '../models/task.dart';
 
@@ -40,7 +41,11 @@ class FirestoreService {
     });
   }
 
-
+  Future<void> addProduct(Products product) async {
+  await FirebaseFirestore.instance
+      .collection('products')
+      .add(product.toMap());
+}
   // ADICIONAR
   Future<void> addTask(Task task) async {
 
