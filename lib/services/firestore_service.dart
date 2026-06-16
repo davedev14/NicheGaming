@@ -4,31 +4,42 @@ import '../models/task.dart';
 
 class FirestoreService {
 
-  final tasks =
+  final CollectionReference products =
       FirebaseFirestore.instance
-          .collection('tasks');
+          .collection('products');
+
+  final CollectionReference tasks =
+    FirebaseFirestore.instance
+        .collection('tasks');
 
   // LISTAR
-  Stream<List<Task>> getTasks(
-      String userId,
-      ) {
+  Future<List<Task>> getProducts() async {
+    final snapshot = await products.get();
 
-    return tasks
-        .where('userId',
-        isEqualTo: userId)
-        .snapshots()
-        .map((snapshot) {
 
       return snapshot.docs.map((doc) {
-
         return Task.fromMap(
-          doc.data(),
+          doc.data() as Map<String, dynamic>,
           doc.id,
         );
 
       }).toList();
+  }
+
+  Stream<List<Task>> getTasks(String userId) {
+    return tasks
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Task.fromMap(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
+      }).toList();
     });
   }
+
 
   // ADICIONAR
   Future<void> addTask(Task task) async {

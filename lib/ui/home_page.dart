@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:niche_gaming/ui/cart_page.dart';
 import '../services/firestore_service.dart';
 
+import 'register_page.dart';
 import '../data/home_products.dart';
 import '../models/task.dart';
 
@@ -24,14 +25,37 @@ class _HomePageState extends State<HomePage> {
   String searchText = '';
   final TextEditingController searchController = TextEditingController();
 
+    List<Task> allProducts = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProducts();
+  }
+
+  Future<void> loadProducts() async {
+    final FirestoreService service = FirestoreService();
+
+    final local = homeProducts;
+    final firebase = await service.getProducts();
+
+    setState(() {
+      allProducts = [...local, ...firebase];
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    final List<Task> filteredProducts = homeProducts.where((product) {
+    final filteredProducts = allProducts.where((product) {
         return product.title
             .toLowerCase()
             .contains(searchText.toLowerCase());
       }).toList();
+
+
     return Scaffold(
       backgroundColor: const Color(0xFFECECEC),
 
@@ -57,6 +81,19 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+
+        
+          leading: IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ProductsPage()
+                ),
+              );
+            },
+          ),
+        
 
         actions: [
           IconButton(
@@ -106,7 +143,9 @@ class _HomePageState extends State<HomePage> {
       ),
 
 
-      body: Padding(
+      body: isLoading
+      ? const Center(child: CircularProgressIndicator())
+      : Padding(
         padding: const EdgeInsets.all(16),
 
         child: GridView.builder(
@@ -238,3 +277,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+

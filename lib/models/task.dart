@@ -26,7 +26,8 @@ class Task {
       'image' : image,
       'price' : price,
       'rating' : rating,
-      'userId': userId};
+      'userId': userId,
+      };
   }
   // Converte Json em um objeto
   factory Task.fromMap(
@@ -40,7 +41,7 @@ class Task {
       image: map['image'] ?? '',
       price: (map['price'] ?? 0).toDouble(),
       rating: (map['rating'] ?? 0).toDouble(),
-      userId: map['userId'] ?? ''
+      userId: map['userId'] ?? '',
     );
   }
 }

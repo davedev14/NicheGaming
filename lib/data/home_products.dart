@@ -24,6 +24,7 @@ final List<Task> homeProducts = [
     price: 2199.00,
     rating: 4.9,
     userId: '',
+
   ),
   Task(
     title: 'Steam Deck OLED',
