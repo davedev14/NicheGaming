@@ -63,8 +63,8 @@ class _ProductsPageState extends State<ProductsPage> {
         title: Text(
           "Cadastrar Produto",
           style: GoogleFonts.passionOne(
-            color: Colors.green,
-            fontSize: 28,
+            color: const Color.fromARGB(255, 87, 205, 93),
+            fontSize: 34,
           ),
         ),
       ),
@@ -97,15 +97,18 @@ class _ProductsPageState extends State<ProductsPage> {
                   : ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
-                        padding: const EdgeInsets.all(14),
+                        padding: const EdgeInsets.all(22),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       onPressed: saveProduct,
                       child: const Text(
-                        "Cadastrar Produto",
-                        style: TextStyle(color: Colors.white),
+                        "Finalizar Cadastro",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          ),
                       ),
                     ),
             ],
