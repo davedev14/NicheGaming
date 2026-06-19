@@ -21,10 +21,11 @@ class CartPage extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: Text("Usuário não encontrado"),
       );
     }
     final userId = user.uid;
+    
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(245, 245, 245, 245),
@@ -212,4 +213,39 @@ class CartPage extends StatelessWidget {
     }
     return total;
   }
+}
+
+Widget buildProductImage(String image) {
+  // PRODUTO SEM IMAGEM (cadastrado)
+  if (image.isEmpty) {
+    return const Center(
+      child: Icon(
+        Icons.shopping_bag,
+        size: 48,
+        color: Colors.grey,
+      ),
+    );
+  }
+
+  // IMAGEM LOCAL (produtos antigos)
+  if (image.startsWith('image/')) {
+    return Image.asset(
+      image,
+      fit: BoxFit.contain,
+    );
+  }
+
+  // IMAGEM DE REDE (se um dia usar)
+  if (image.startsWith('http')) {
+    return Image.network(
+      image,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) {
+        return const Icon(Icons.shopping_bag);
+      },
+    );
+  }
+
+  // FALLBACK
+  return const Icon(Icons.shopping_bag);
 }

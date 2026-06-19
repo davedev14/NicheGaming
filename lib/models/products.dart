@@ -3,8 +3,9 @@ class Products {
   final String title;
   final String category;
   final String description;
-  final double price;
   final String imageUrl;
+  final double price;
+
   final String sellerId;
 
   Products({

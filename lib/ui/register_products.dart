@@ -88,7 +88,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     value!.isEmpty ? "Informe o preço" : null,
               ),
 
-              _buildField(imageController, "URL da imagem"),
+              // _buildField(imageController, "URL da imagem"),
 
               const SizedBox(height: 20),
 
