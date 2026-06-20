@@ -36,7 +36,7 @@ class _ProductsPageState extends State<ProductsPage> {
       category: categoryController.text,
       price: double.tryParse(priceController.text.replaceAll(',','.'),
       ) ?? 0.0,
-      imageUrl: imageController.text,
+      imageUrl: 'https://placehold.co/600x400/png?text=Sem+Imagem',
       sellerId: userId,
     );
 

@@ -115,15 +115,11 @@ class CartPage extends StatelessWidget {
                           color: const Color(0xFFECECEC),
                           borderRadius: BorderRadius.circular(16),
                         ),
+
                         child: Row(
                           children: [
                             // IMAGEM
-                            Image.network(
-                              item.image,
-                              width: 60,
-                              height: 60,
-                              fit: BoxFit.cover,
-                            ),
+                            buildProductImage(item.image),
 
                             const SizedBox(width: 12),
 
@@ -215,10 +211,16 @@ class CartPage extends StatelessWidget {
   }
 }
 
-Widget buildProductImage(String image) {
+Widget buildProductImage(String? image) {
   // PRODUTO SEM IMAGEM (cadastrado)
-  if (image.isEmpty) {
-    return const Center(
+  if (image == null || image.trim().isEmpty) {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Icon(
         Icons.shopping_bag,
         size: 48,
@@ -227,25 +229,30 @@ Widget buildProductImage(String image) {
     );
   }
 
-  // IMAGEM LOCAL (produtos antigos)
-  if (image.startsWith('image/')) {
-    return Image.asset(
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(8),
+    child: Image.network(
       image,
-      fit: BoxFit.contain,
-    );
-  }
-
-  // IMAGEM DE REDE (se um dia usar)
-  if (image.startsWith('http')) {
-    return Image.network(
-      image,
-      fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) {
-        return const Icon(Icons.shopping_bag);
+      width: 60,
+      height: 60,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 60,
+          height: 60,
+          color: Colors.grey[300],
+          child: const Icon(
+            Icons.broken_image,
+            size: 30,
+            color: Colors.grey,
+          ),
+        );
       },
-    );
-  }
+    ),
+  );
+
+
 
   // FALLBACK
-  return const Icon(Icons.shopping_bag);
+  // return const Icon(Icons.shopping_bag);
 }
