@@ -5,26 +5,27 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 
-import 'package:niche_gaming/main.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:niche_gaming/models/products.dart';
+
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test("Deve criar um Produto da forma correta", () {
+    final products = Products(
+      title: "Play Station 5 Pro", 
+      description: "Novo", 
+      category: "Console", 
+      price: 3500.00, 
+      imageUrl: "", 
+      sellerId: "1");
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      expect(products.title, "Play Station 5 Pro");
+      expect(products.description, "Novo");
+      expect(products.category, "Console");
+      expect(products.price, 3500.00);
+      expect(products.imageUrl, "");
+      expect(products.sellerId, "1");
   });
 }

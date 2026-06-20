@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Image.asset(
               'image/logo.png',
-              height: 24, // ajuste como quiser
+              height: 24, 
             ),
 
             const SizedBox(width: 8),
