@@ -6,7 +6,9 @@ import '../models/products.dart';
 import '../services/firestore_service.dart';
 
 class ProductsPage extends StatefulWidget {
-  const ProductsPage({super.key});
+  final Products? productToEdit;
+
+  const ProductsPage({super.key, this.productToEdit});
 
   @override
   State<ProductsPage> createState() => _ProductsPageState();
@@ -22,6 +24,18 @@ class _ProductsPageState extends State<ProductsPage> {
   final imageController = TextEditingController();
 
   bool isLoading = false;
+
+  void initState() {
+    super.initState();
+    // Se um produto foi passado para edição, preenche os campos automaticamente
+    if (widget.productToEdit != null) {
+      titleController.text = widget.productToEdit!.title;
+      descriptionController.text = widget.productToEdit!.description;
+      categoryController.text = widget.productToEdit!.category;
+      priceController.text = widget.productToEdit!.price.toStringAsFixed(2);
+    }
+  }
+
 
   Future<void> saveProduct() async {
     if (!_formKey.currentState!.validate()) return;
@@ -40,19 +54,29 @@ class _ProductsPageState extends State<ProductsPage> {
       sellerId: userId,
     );
 
+  if (widget.productToEdit != null) {
+    await FirestoreService().updateProduct(widget.productToEdit!.id!, product);
+  } else {
     await FirestoreService().addProduct(product);
+  }
 
+    
     setState(() => isLoading = false);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Produto cadastrado com sucesso!')),
+      SnackBar(
+        content: Text(widget.productToEdit != null
+        ? 'Produto atualizado com sucesso!'
+        :'Produto cadastrado com sucesso!')),
     );
-
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final isEditing = widget.productToEdit != null;
+
     return Scaffold(
       backgroundColor: const Color(0xFFECECEC),
 
@@ -61,7 +85,7 @@ class _ProductsPageState extends State<ProductsPage> {
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.green),
         title: Text(
-          "Cadastrar Produto",
+          isEditing ? "Atualizar Produto" : "Cadastrar Produto",
           style: GoogleFonts.passionOne(
             color: const Color.fromARGB(255, 87, 205, 93),
             fontSize: 34,
@@ -103,8 +127,8 @@ class _ProductsPageState extends State<ProductsPage> {
                         ),
                       ),
                       onPressed: saveProduct,
-                      child: const Text(
-                        "Finalizar Cadastro",
+                      child: Text(
+                        isEditing ? "Salvar Alterações": "Finalizar Cadastro",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

@@ -81,15 +81,40 @@ Future<void> decreaseQuantity(Task task) async {
   } else {
     await tasks.doc(task.id).delete(); // remove se chegar a 0
   }
-}
-}
+  }
 
-Future<void> deleteProduct(String productId) async {
+  Future<void> deleteProduct(String productId) async {
   await FirebaseFirestore.instance
       .collection('products')
       .doc(productId)
       .delete();
+  }
+
+Future<void> updateProduct(String productId, Products product) async {
+    try {
+      // Alterado de _productsCollection.doc para products.doc
+      await products.doc(productId).update(product.toMap());
+    } catch (e) {
+      print("Erro ao atualizar produto: $e");
+      rethrow;
+    }
+  }
+
 }
+
+
+
+
+
+
+
+
+// Future<void> deleteProduct(String productId) async {
+//   await FirebaseFirestore.instance
+//       .collection('products')
+//       .doc(productId)
+//       .delete();
+// }
 
 // Future<void> increaseQuantity(Task task) async {
 //   await tasks.doc(task.id).update({
