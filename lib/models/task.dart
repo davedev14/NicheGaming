@@ -7,6 +7,7 @@ class Task {
   final String image;
   final double rating;
   String userId;
+  int quantity;
 
   Task({
     this.id,
@@ -16,6 +17,7 @@ class Task {
     required this.price,
     required this.rating,
     required this.userId,
+    this.quantity = 1,
 
     });
     // converter para json
@@ -27,6 +29,7 @@ class Task {
       'price' : price,
       'rating' : rating,
       'userId': userId,
+      'quantity': quantity,
       };
   }
   // Converte Json em um objeto
@@ -42,6 +45,7 @@ class Task {
       price: (map['price'] ?? 0).toDouble(),
       rating: (map['rating'] ?? 0).toDouble(),
       userId: map['userId'] ?? '',
+      quantity: int.tryParse(map['quantity'].toString()) ?? 1,
     );
   }
 }

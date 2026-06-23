@@ -149,6 +149,32 @@ class CartPage extends StatelessWidget {
                               ),
                             ),
 
+                          Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.remove_circle_outline),
+                                    onPressed: () {
+                                      service.decreaseQuantity(item);
+                                    },
+                                  ),
+
+                                  Text(
+                                    item.quantity.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  IconButton(
+                                    icon: const Icon(Icons.add_circle_outline),
+                                    onPressed: () {
+                                      service.increaseQuantity(item);
+                                    },
+                                  ),
+                                ],
+                              ),
+
                             // REMOVER
                             IconButton(
                               icon: const Icon(
@@ -205,7 +231,7 @@ class CartPage extends StatelessWidget {
   double _calculateTotal(List<Task> items) {
     double total = 0;
     for (var item in items) {
-      total += item.price;
+      total += item.price * item.quantity;
     }
     return total;
   }

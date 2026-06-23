@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:niche_gaming/ui/cart_page.dart';
 import '../services/firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'register_products.dart';
 import '../data/home_products.dart';
@@ -45,6 +46,27 @@ class _HomePageState extends State<HomePage> {
       isLoading = false;
     });
   }
+
+  Future<void> _deleteProduct(BuildContext context, String productId) async {
+                          try {
+                            await FirebaseFirestore.instance
+                                .collection('products')
+                                .doc(productId)
+                                .delete();
+
+                            setState(() {
+                              allProducts.removeWhere((p) => p.id == productId);
+                            });
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Produto excluído')),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Erro ao excluir produto')),
+                            );
+                          }
+                        }
 
   @override
   Widget build(BuildContext context) {
@@ -175,19 +197,54 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ===== IMAGEM + BOTÃO =====
+                  // Expanded(
+                  //   child: Stack(
+                  //     children: [
+                  //       Center(
+                  //         child: Image.network(
+                  //           product.image,
+                  //           fit: BoxFit.contain,
+                  //           errorBuilder: (_, _, _) =>
+                  //               const Icon(Icons.broken_image),
+                  //         ),
+                  //       ),
+
+                  //       // BOTÃO ADD CARRINHO
+                  //       Positioned(
+                  //         top: 8,
+                  //         right: 8,
+                  //         child: Container(
+                  //           decoration: const BoxDecoration(
+                  //             color: Colors.white,
+                  //             shape: BoxShape.circle,
+                  //           ),
+
+                  //           child: IconButton(
+                  //             icon: const Icon(Icons.shopping_cart, size: 20),
+                  //             onPressed: () {
+                  //               _addToCart(context, product);
+                  //             },
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   Expanded(
                     child: Stack(
                       children: [
                         Center(
-                          child: Image.network(
-                            product.image,
-                            fit: BoxFit.contain,
-                            errorBuilder: (_, _, _) =>
-                                const Icon(Icons.broken_image),
-                          ),
+                          child: product.image.isNotEmpty
+                              ? Image.network(
+                                  product.image,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (_, __, ___) =>
+                                      const Icon(Icons.image_not_supported),
+                                )
+                              : const Icon(Icons.image_not_supported, size: 48),
                         ),
 
-                        // BOTÃO ADD CARRINHO
+                        // ADD AO CARRINHO
                         Positioned(
                           top: 8,
                           right: 8,
@@ -196,7 +253,6 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                               shape: BoxShape.circle,
                             ),
-
                             child: IconButton(
                               icon: const Icon(Icons.shopping_cart, size: 20),
                               onPressed: () {
@@ -205,6 +261,26 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
+
+
+                        // 🗑️ BOTÃO EXCLUIR (SÓ FIREBASE)
+                        if (product.id != null)
+                          Positioned(
+                            top: 8,
+                            left: 8,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                                onPressed: () {
+                                  _deleteProduct(context, product.id!);
+                                },
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -268,6 +344,7 @@ class _HomePageState extends State<HomePage> {
         price: product.price,
         rating: product.rating,
         userId: userId,
+        quantity: 1,
       ),
     );
 

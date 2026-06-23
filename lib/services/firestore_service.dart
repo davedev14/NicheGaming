@@ -9,7 +9,7 @@ class FirestoreService {
       FirebaseFirestore.instance
           .collection('products');
 
-  final CollectionReference tasks =
+  final CollectionReference<Map<String, dynamic>> tasks =
     FirebaseFirestore.instance
         .collection('tasks');
 
@@ -66,4 +66,43 @@ class FirestoreService {
 
     await tasks.doc(id).delete();
   }
+
+  Future<void> increaseQuantity(Task task) async {
+  await tasks.doc(task.id).update({
+    'quantity': task.quantity + 1,
+  });
 }
+
+Future<void> decreaseQuantity(Task task) async {
+  if (task.quantity > 1) {
+    await tasks.doc(task.id).update({
+      'quantity': task.quantity - 1,
+    });
+  } else {
+    await tasks.doc(task.id).delete(); // remove se chegar a 0
+  }
+}
+}
+
+Future<void> deleteProduct(String productId) async {
+  await FirebaseFirestore.instance
+      .collection('products')
+      .doc(productId)
+      .delete();
+}
+
+// Future<void> increaseQuantity(Task task) async {
+//   await tasks.doc(task.id).update({
+//     'quantity': task.quantity + 1,
+//   });
+// }
+
+// Future<void> decreaseQuantity(Task task) async {
+//   if (task.quantity > 1) {
+//     await tasks.doc(task.id).update({
+//       'quantity': task.quantity - 1,
+//     });
+//   } else {
+//     await tasks.doc(task.id).delete(); // remove se chegar a 0
+//   }
+// }
