@@ -198,39 +198,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ===== IMAGEM + BOTÃO =====
-                  // Expanded(
-                  //   child: Stack(
-                  //     children: [
-                  //       Center(
-                  //         child: Image.network(
-                  //           product.image,
-                  //           fit: BoxFit.contain,
-                  //           errorBuilder: (_, _, _) =>
-                  //               const Icon(Icons.broken_image),
-                  //         ),
-                  //       ),
-
-                  //       // BOTÃO ADD CARRINHO
-                  //       Positioned(
-                  //         top: 8,
-                  //         right: 8,
-                  //         child: Container(
-                  //           decoration: const BoxDecoration(
-                  //             color: Colors.white,
-                  //             shape: BoxShape.circle,
-                  //           ),
-
-                  //           child: IconButton(
-                  //             icon: const Icon(Icons.shopping_cart, size: 20),
-                  //             onPressed: () {
-                  //               _addToCart(context, product);
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+ 
                   Expanded(
                     child: Stack(
                       children: [
@@ -367,6 +335,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+ 
+  // }
+
+  // ================= ADD AO CARRINHO =================
+  void _addToCart(BuildContext context, Task product) {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    final FirestoreService service = FirestoreService();
+
+    service.addTask(
+      Task(
+        title: product.title,
+        category: product.category,
+        image: product.image,
+        price: product.price,
+        rating: product.rating,
+        userId: userId,
+        quantity: 1,
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Produto adicionado ao carrinho'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+}
+
   //                       if (product.id != null)
   //                         Positioned(
   //                           top: 8,
@@ -433,33 +431,39 @@ class _HomePageState extends State<HomePage> {
   //       ),
   //     ),
   //   );
-  // }
-
-  // ================= ADD AO CARRINHO =================
-  void _addToCart(BuildContext context, Task product) {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    final FirestoreService service = FirestoreService();
-
-    service.addTask(
-      Task(
-        title: product.title,
-        category: product.category,
-        image: product.image,
-        price: product.price,
-        rating: product.rating,
-        userId: userId,
-        quantity: 1,
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Produto adicionado ao carrinho'),
-        duration: Duration(seconds: 1),
-      ),
-    );
-  }
-}
 
 
+
+                  // Expanded(
+                  //   child: Stack(
+                  //     children: [
+                  //       Center(
+                  //         child: Image.network(
+                  //           product.image,
+                  //           fit: BoxFit.contain,
+                  //           errorBuilder: (_, _, _) =>
+                  //               const Icon(Icons.broken_image),
+                  //         ),
+                  //       ),
+
+                  //       // BOTÃO ADD CARRINHO
+                  //       Positioned(
+                  //         top: 8,
+                  //         right: 8,
+                  //         child: Container(
+                  //           decoration: const BoxDecoration(
+                  //             color: Colors.white,
+                  //             shape: BoxShape.circle,
+                  //           ),
+
+                  //           child: IconButton(
+                  //             icon: const Icon(Icons.shopping_cart, size: 20),
+                  //             onPressed: () {
+                  //               _addToCart(context, product);
+                  //             },
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),

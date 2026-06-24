@@ -7,7 +7,7 @@ final List<Task> homeProducts = [
     image: 'image/ps5.png',
     price: 4499.90,
     rating: 4.8,
-    userId: '', // 👈 vazio porque NÃO é carrinho
+    userId: '', 
   ),
   Task(
     title: 'Xbox Series X',
