@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'register_products.dart';
 import '../data/home_products.dart';
 import '../models/task.dart';
+import '../models/products.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -264,71 +265,175 @@ class _HomePageState extends State<HomePage> {
 
 
                         // 🗑️ BOTÃO EXCLUIR (SÓ FIREBASE)
-                        if (product.id != null)
-                          Positioned(
-                            top: 8,
-                            left: 8,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                                onPressed: () {
-                                  _deleteProduct(context, product.id!);
-                                },
-                              ),
-                            ),
+                        // BOTÃO EXCLUIR E EDITAR (SÓ APARECE EM ITENS VINDO DO FIREBASE QUE TÊM ID)
+                              if (product.id != null) ...[
+                                // 🗑️ BOTÃO EXCLUIR
+                                Positioned(
+                                  top: 8,
+                                  left: 8,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                                      onPressed: () {
+                                        _deleteProduct(context, product.id!);
+                                      },
+                                    ),
+                                  ),
+                                ),
+
+                                // ✏️ NOVO: BOTÃO EDITAR (Fica logo abaixo do botão de excluir)
+                                Positioned(
+                                  top: 52,
+                                  left: 8,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
+                                      onPressed: () async {
+                                        // Converte a Task da lista temporariamente para o modelo Products
+                                        final productToEdit = Products(
+                                          id: product.id,
+                                          title: product.title,
+                                          description: '', // Se sua Task não tiver descrição, passa string vazia
+                                          category: product.category,
+                                          price: product.price,
+                                          imageUrl: product.image,
+                                          sellerId: product.userId ?? '',
+                                        );
+
+                                        // Abre a tela de Edição e espera o salvamento terminar
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ProductsPage(productToEdit: productToEdit),
+                                          ),
+                                        );
+
+                                        // Recarrega a Home para mostrar as informações atualizadas
+                                        loadProducts();
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
+                        ),
+
+                        // ===== TEXTO =====
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.category,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                product.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                'R\$ ${product.price.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-
-                  // ===== TEXTO =====
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.category,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.green,
-                          ),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          product.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-
-                        const SizedBox(height: 6),
-
-                        Text(
-                          'R\$ ${product.price.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ),
+            ),
     );
   }
+
+  //                       if (product.id != null)
+  //                         Positioned(
+  //                           top: 8,
+  //                           left: 8,
+  //                           child: Container(
+  //                             decoration: const BoxDecoration(
+  //                               color: Colors.white,
+  //                               shape: BoxShape.circle,
+  //                             ),
+  //                             child: IconButton(
+  //                               icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+  //                               onPressed: () {
+  //                                 _deleteProduct(context, product.id!);
+  //                               },
+  //                             ),
+  //                           ),
+  //                         ),
+
+                          
+  //                     ],
+  //                   ),
+  //                 ),
+
+  //                 // ===== TEXTO =====
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(10),
+
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         product.category,
+  //                         style: const TextStyle(
+  //                           fontSize: 12,
+  //                           color: Colors.green,
+  //                         ),
+  //                       ),
+
+  //                       const SizedBox(height: 4),
+
+  //                       Text(
+  //                         product.title,
+  //                         maxLines: 2,
+  //                         overflow: TextOverflow.ellipsis,
+  //                         style: const TextStyle(fontWeight: FontWeight.bold),
+  //                       ),
+
+  //                       const SizedBox(height: 6),
+
+  //                       Text(
+  //                         'R\$ ${product.price.toStringAsFixed(2)}',
+  //                         style: const TextStyle(
+  //                           color: Colors.green,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // ================= ADD AO CARRINHO =================
   void _addToCart(BuildContext context, Task product) {
